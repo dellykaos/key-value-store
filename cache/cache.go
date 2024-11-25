@@ -3,6 +3,7 @@ package cache
 import (
 	"errors"
 	"fmt"
+	"sync"
 )
 
 var (
@@ -10,6 +11,7 @@ var (
 )
 
 type Cache struct {
+	mu             sync.Mutex
 	cache          map[string]*node
 	attributesType map[string]valueType
 	linkedList     *linkedList
@@ -24,6 +26,9 @@ func NewCache() *Cache {
 }
 
 func (c *Cache) Get(key string) (string, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	node, found := c.cache[key]
 	if !found {
 		return "", fmt.Errorf("No entry found for %s", key)
@@ -33,6 +38,9 @@ func (c *Cache) Get(key string) (string, error) {
 }
 
 func (c *Cache) Delete(key string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	node, found := c.cache[key]
 	if !found {
 		return
@@ -43,6 +51,9 @@ func (c *Cache) Delete(key string) {
 }
 
 func (c *Cache) Put(key string, attributeKeys, attributeValues []string) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	node, found := c.cache[key]
 	if found {
 		items, err := c.buildItems(attributeKeys, attributeValues)
@@ -66,6 +77,9 @@ func (c *Cache) Put(key string, attributeKeys, attributeValues []string) error {
 }
 
 func (c *Cache) Search(attrKey, attrVal string) string {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	res := ""
 	n := c.linkedList.head
 	for n != c.linkedList.tail {
@@ -87,6 +101,9 @@ func (c *Cache) Search(attrKey, attrVal string) string {
 }
 
 func (c *Cache) Keys() string {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	keys := ""
 	n := c.linkedList.head
 	for n != c.linkedList.tail {
