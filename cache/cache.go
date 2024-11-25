@@ -42,10 +42,10 @@ func (c *Cache) Delete(key string) {
 	delete(c.cache, key)
 }
 
-func (c *Cache) Put(key string, values map[string]string) error {
+func (c *Cache) Put(key string, attributeKeys, attributeValues []string) error {
 	node, found := c.cache[key]
 	if found {
-		items, err := c.buildItems(values)
+		items, err := c.buildItems(attributeKeys, attributeValues)
 		if err != nil {
 			return err
 		}
@@ -54,7 +54,7 @@ func (c *Cache) Put(key string, values map[string]string) error {
 		return nil
 	}
 
-	items, err := c.buildItems(values)
+	items, err := c.buildItems(attributeKeys, attributeValues)
 	if err != nil {
 		return err
 	}
@@ -101,9 +101,10 @@ func (c *Cache) Keys() string {
 	return keys[0 : len(keys)-1]
 }
 
-func (c *Cache) buildItems(values map[string]string) ([]*item, error) {
+func (c *Cache) buildItems(attributeKeys, attributeValues []string) ([]*item, error) {
 	attributes := []*item{}
-	for k, v := range values {
+	for i := 0; i < len(attributeKeys); i++ {
+		k, v := attributeKeys[i], attributeValues[i]
 		item := newItem(k, v)
 		if t, found := c.attributesType[k]; found {
 			if t != item.valType {

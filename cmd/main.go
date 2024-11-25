@@ -10,7 +10,7 @@ import (
 )
 
 type Cache interface {
-	Put(key string, values map[string]string) error
+	Put(key string, attributeKeys, attributeValues []string) error
 	Get(key string) (string, error)
 	Search(attributeKey, attributeValue string) string
 	Delete(key string)
@@ -37,12 +37,13 @@ func processArgs(args []string, c Cache) {
 	switch args[0] {
 	case "put":
 		key := args[1]
-		attrs := map[string]string{}
+		attributeKeys, attributeValues := []string{}, []string{}
 		for i := 2; i < len(args); i += 2 {
 			k, v := args[i], args[i+1]
-			attrs[k] = v
+			attributeKeys = append(attributeKeys, k)
+			attributeValues = append(attributeValues, v)
 		}
-		if err := c.Put(key, attrs); err != nil {
+		if err := c.Put(key, attributeKeys, attributeValues); err != nil {
 			fmt.Println(err.Error())
 		}
 	case "delete":
