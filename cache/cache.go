@@ -3,6 +3,8 @@ package cache
 import (
 	"errors"
 	"fmt"
+	"sort"
+	"strings"
 	"sync"
 )
 
@@ -80,7 +82,7 @@ func (c *Cache) Search(attrKey, attrVal string) string {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	res := ""
+	res := []string{}
 	n := c.linkedList.head
 	for n != c.linkedList.tail {
 		if n.attributes == nil {
@@ -90,32 +92,34 @@ func (c *Cache) Search(attrKey, attrVal string) string {
 
 		for _, attr := range n.attributes {
 			if attr.key == attrKey && attr.value == attrVal {
-				res += fmt.Sprintf("%s,", n.key)
+				res = append(res, n.key)
 				break
 			}
 		}
 		n = n.next
 	}
 
-	return res[0 : len(res)-1]
+	sort.Strings(res)
+	return strings.Join(res, ",")
 }
 
 func (c *Cache) Keys() string {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	keys := ""
+	keys := []string{}
 	n := c.linkedList.head
 	for n != c.linkedList.tail {
 		if n.attributes == nil {
 			n = n.next
 			continue
 		}
-		keys += n.key + ","
+		keys = append(keys, n.key)
 		n = n.next
 	}
 
-	return keys[0 : len(keys)-1]
+	sort.Strings(keys)
+	return strings.Join(keys, ",")
 }
 
 func (c *Cache) buildItems(attributeKeys, attributeValues []string) ([]*item, error) {

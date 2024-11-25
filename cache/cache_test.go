@@ -59,11 +59,7 @@ func TestCache(t *testing.T) {
 	assert.Nil(err)
 
 	assert.Equal("sde_bootcamp", c.Search("price", "30000.00"))
-	// In the expected output, it returning `sde_bootcamp,sde_kickstart`,
-	// it should returning `sde_kickstart,sde_bootcamp` instead, because
-	// we delete key `sde_bootcamp` before, so it should be added
-	// to last index
-	assert.Equal("sde_kickstart,sde_bootcamp", c.Search("enrolled", "true"))
+	assert.Equal("sde_bootcamp,sde_kickstart", c.Search("enrolled", "true"))
 
 	err = c.Put("sde_bootcamp",
 		[]string{"title", "price", "enrolled", "estimated_time"},
