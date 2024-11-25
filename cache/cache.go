@@ -23,13 +23,13 @@ func NewCache() *Cache {
 	}
 }
 
-func (c *Cache) Get(key string) (string, bool) {
+func (c *Cache) Get(key string) (string, error) {
 	node, found := c.cache[key]
 	if !found {
-		return "", false
+		return "", fmt.Errorf("No entry found for %s", key)
 	}
 
-	return node.String(), true
+	return node.String(), nil
 }
 
 func (c *Cache) Delete(key string) {

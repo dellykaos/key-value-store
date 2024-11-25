@@ -11,7 +11,7 @@ import (
 
 type Cache interface {
 	Put(key string, values map[string]string) error
-	Get(key string) (string, bool)
+	Get(key string) (string, error)
 	Search(attributeKey, attributeValue string) string
 	Delete(key string)
 	Keys() string
@@ -50,11 +50,11 @@ func processArgs(args []string, c Cache) {
 		c.Delete(key)
 	case "get":
 		key := args[1]
-		values, found := c.Get(key)
-		if found {
+		values, err := c.Get(key)
+		if err == nil {
 			fmt.Println(values)
 		} else {
-			fmt.Printf("No entry found for %s\n", key)
+			fmt.Println(err)
 		}
 	case "search":
 		attrKey, attrVal := args[1], args[2]
