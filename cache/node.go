@@ -14,10 +14,10 @@ func newNode(key string, attributes []*item) *node {
 	}
 }
 
-func (n *node) String() string {
+func (n *node) string() string {
 	res := ""
 	for i, item := range n.attributes {
-		res += item.String()
+		res += item.string()
 		if i < len(n.attributes)-1 {
 			res += ", "
 		}

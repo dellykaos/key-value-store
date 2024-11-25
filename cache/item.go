@@ -36,6 +36,6 @@ func newItem(key, value string) *item {
 	return item
 }
 
-func (item *item) String() string {
+func (item *item) string() string {
 	return fmt.Sprintf("%s: %s", item.key, item.value)
 }

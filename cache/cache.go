@@ -29,7 +29,7 @@ func (c *Cache) Get(key string) (string, error) {
 		return "", fmt.Errorf("No entry found for %s", key)
 	}
 
-	return node.String(), nil
+	return node.string(), nil
 }
 
 func (c *Cache) Delete(key string) {
